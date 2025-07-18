@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Post {
+    id        Int      @id @default(autoincrement())
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([name])
+}
+
+model User {
+    id            String    @id @default(cuid())
+    clerkId       String    @unique
+    email         String?
+    name          String?
+    username      String    @unique
+    imageUrl      String?
+    bio           String?
+    lastCheckedIn DateTime? @default(now())
+    gyms          Gym[]     @relation("GymMembers")
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    Gym           Gym[]
+
+    @@index([clerkId])
+    @@index([username])
+}
+
+model Gym {
+    id          String   @id @default(cuid())
+    slug        String   @unique
+    name        String
+    address     String?
+    city        String?
+    state       String?
+    zip         String?
+    country     String?
+    phone       String?
+    website     String?
+    memberCount Int
+    members     User[]   @relation("GymMembers")
+    createdBy   User     @relation(fields: [createdById], references: [id])
+    createdById String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([name])
+    @@index([slug])
+}
