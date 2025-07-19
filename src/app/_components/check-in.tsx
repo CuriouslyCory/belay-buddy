@@ -14,9 +14,9 @@ function Spinner() {
 
 export function CheckIn({ gymId }: { gymId: string }) {
   const { isSignedIn } = useAuth();
+  const utils = api.useUtils();
   const { mutate: checkIn, isPending } = api.gym.checkIn.useMutation({
     onSuccess: () => {
-      const utils = api.useUtils();
       toast.success("Checked in successfully");
       utils.gym.getMembers.invalidate();
     },
